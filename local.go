@@ -34,7 +34,7 @@ func (local *CLocal) handleConn(localConn *SecureTCPConn) {
 
 	remoteConn, err := DialTcpSecure(local.remoteTCPAddr, local.cipher)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return
 	}
 
@@ -42,6 +42,7 @@ func (local *CLocal) handleConn(localConn *SecureTCPConn) {
 
 	go func() {
 		if err := remoteConn.DecodeCopy(localConn); err != nil {
+			//log.Println(err)
 			remoteConn.Close()
 			localConn.Close()
 		}
@@ -49,6 +50,7 @@ func (local *CLocal) handleConn(localConn *SecureTCPConn) {
 	}()
 
 	if err := localConn.EncodeCopy(remoteConn); err != nil {
+		//log.Println(err)
 		remoteConn.Close()
 		localConn.Close()
 	}
