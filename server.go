@@ -74,7 +74,10 @@ func (server *CServer) handleConn(localConn *SecureTCPConn) {
 	}
 
 	go func() {
-		localConn.DecodeCopy(dstServer)
+		if err := localConn.DecodeCopy(dstServer); err != nil {
+			localConn.Close()
+			dstServer.Close()
+		}
 	}()
 
 	(&SecureTCPConn{dstServer, localConn.Cipher}).EncodeCopy(localConn)
